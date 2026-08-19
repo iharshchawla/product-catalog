@@ -1,19 +1,16 @@
-import { useState } from 'react';
-import { useProducts } from './hooks/useProducts';
 import { useDebounce } from './hooks/useDebounce';
+import { useProducts } from './hooks/useProducts';
 import { useProductFilter } from './hooks/useProductFilter';
+import { useCatalogStore } from './store/catalogStore';
 import { SearchBar } from './components/SearchBar';
 import { CategoryFilter } from './components/CategoryFilter';
 import { ProductList } from './components/ProductList';
 import { ProductDetailModal } from './components/ProductDetailModal';
-import type { Product } from './types/product';
 
 const CATEGORIES = ['Electronics', 'Sportswear', 'Home Appliances', 'Accessories'];
 
 function App() {
-  const [search, setSearch] = useState('');
-  const [category, setCategory] = useState('');
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const { search, category, selectedProduct, setSearch, setCategory, setSelectedProduct } = useCatalogStore();
 
   const debouncedSearch = useDebounce(search);
   const { products, loading, error } = useProducts(category || undefined);
@@ -35,10 +32,7 @@ function App() {
         onProductClick={setSelectedProduct}
       />
 
-      <ProductDetailModal.Root
-        isOpen={!!selectedProduct}
-        onClose={() => setSelectedProduct(null)}
-      >
+      <ProductDetailModal.Root isOpen={!!selectedProduct} onClose={() => setSelectedProduct(null)}>
         <ProductDetailModal.Header title={selectedProduct?.name ?? ''} />
         <ProductDetailModal.Body>
           <p>Price: ${selectedProduct?.price.toFixed(2)}</p>

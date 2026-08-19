@@ -77,7 +77,7 @@ Created the initial reusable UI components for the product catalog:
 
 ---
 
-## Step 6: Product Detail Modal (Compound Component)
+## Step 5: Product Detail Modal (Compound Component)
 
 Implemented the product detail modal using the compound component pattern:
 
@@ -87,3 +87,21 @@ React Context is used internally to share the `onClose` handler between the moda
 
 - Clicking the overlay closes the modal, while clicking inside the modal content keeps it open. This is handled using event propagation control.
 - `Root` returns `null` when the modal is closed, so the modal content is not rendered or mounted until it is opened.
+
+---
+
+## Step 6: Global State (Zustand)
+
+The state requirements in the assignment mark product data and selected category as global, while search, selected product, and loading/error can be either local or global.
+
+I used Zustand for the shared client-side state and kept Apollo responsible for the server-side product data.
+
+- **Product list** — Kept in Apollo Client's cache through `useProducts`. It is already globally available through Apollo, so duplicating the same data in Zustand would add unnecessary state and another source of truth.
+- **Selected category** — Stored in Zustand as shared filter state.
+- **Search query** — Stored in Zustand so it can be accessed by other components without prop drilling.
+- **Selected product** — Stored in Zustand and used to control the product detail modal.
+- **Loading/error** — Kept with Apollo's `loading` and `error` states instead of duplicating them in Zustand.
+
+`src/store/catalogStore.ts` contains the shared state and its setter functions. `App.tsx` was updated to read these values from Zustand instead of maintaining them with local `useState`.
+
+This keeps server state in Apollo and shared client/UI state in Zustand, without maintaining duplicate sources of truth.
