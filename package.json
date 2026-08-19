@@ -25,6 +25,7 @@
   "dependencies": {
     "@apollo/client": "^4.2.12",
     "graphql": "^16.14.2",
+    "graphql-yoga": "^5.21.3",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-window": "^2.3.0",

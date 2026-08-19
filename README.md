@@ -1,73 +1,44 @@
-# React + TypeScript + Vite
+# Product Catalog — Mott MacDonald
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This README captures the implementation decisions made during the assignment, along with the reasoning behind them and how they relate to the requirements.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Step 1: Project Initialization & Package Installation
 
-## React Compiler
+### Why Vite instead of Create React App?
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+I chose Vite for the project setup instead of Create React App (CRA), as CRA is deprecated for new React applications and Vite provides a lightweight development and build setup.
 
-## Expanding the ESLint configuration
+### Core Technology & Dependencies
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **React + TypeScript + Vite** — Used as the core frontend stack.
+- **Apollo Client + GraphQL** — Used to consume the mock GraphQL API and manage server-side data and caching.
+- **Zustand** — Used for lightweight global client-side state such as filters and selected product state.
+- **react-window** — Used for list virtualization as required by the performance requirements.
+- **Jest + React Testing Library** — Used for unit and integration testing as specified in the assignment.
+- **jest-environment-jsdom** — Provides the DOM environment required for React component tests.
+- **ts-jest + @types/jest** — Used to run TypeScript-based Jest tests with type support.
+- **@testing-library/user-event** — Used to test user interactions such as typing, clicking and keyboard actions.
+- **ESLint + TypeScript ESLint + React Hooks ESLint** — Used for code quality, TypeScript linting and React Hooks rules.
+- **React Refresh ESLint plugin** — Used with the Vite React setup.
+- **Prettier + eslint-config-prettier** — Used for consistent formatting and to avoid conflicts between ESLint and Prettier.
+- **Husky + lint-staged** — Used to run code-quality checks before committing changes.
+- **TypeScript** — Configured with strict type checking.
 
-```js
-export default defineConfig([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
+### Testing Tooling Decision
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+I initially considered Vitest because it integrates well with Vite. However, the assignment specifically requires **Jest + React Testing Library**, so I decided to use Jest and configured it to work with the project's TypeScript and ESM setup.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
-```
+---
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Step 2: Mock GraphQL API & Apollo Client
 
-```js
-// eslint.config.js
-import reactX from "eslint-plugin-react-x";
-import reactDom from "eslint-plugin-react-dom";
+### Mock GraphQL Server
 
-export default defineConfig([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs["recommended-typescript"],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
+A local GraphQL mock server was created using **GraphQL Yoga**.
+
+The server runs with:
+```bash
+node server.js
 ```
