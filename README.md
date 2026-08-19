@@ -74,3 +74,16 @@ Created the initial reusable UI components for the product catalog:
 - **`ProductListItem.tsx`** — Renders an individual product row. It is wrapped with `React.memo` to avoid unnecessary re-renders when the row's props have not changed.
 
 **Design note:** Category filtering is handled server-side by passing the selected category as a GraphQL variable. Name search is handled on the client using the already-fetched product list through `useProductFilter`. Category changes trigger a new query, while the search stays client-side so we do not make an API request for every character typed, even with debouncing.
+
+---
+
+## Step 6: Product Detail Modal (Compound Component)
+
+Implemented the product detail modal using the compound component pattern:
+
+`ProductDetailModal.Root / .Header / .Body / .Footer`
+
+React Context is used internally to share the `onClose` handler between the modal sub-components, avoiding the need to pass the same props through each level.
+
+- Clicking the overlay closes the modal, while clicking inside the modal content keeps it open. This is handled using event propagation control.
+- `Root` returns `null` when the modal is closed, so the modal content is not rendered or mounted until it is opened.
