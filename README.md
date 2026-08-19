@@ -42,3 +42,35 @@ The server runs with:
 ```bash
 node server.js
 ```
+
+---
+
+## Step 3: Created Custom Hooks
+
+### `useProducts`
+
+Created a custom `useProducts` hook to encapsulate the Apollo Client product-list query.  Returns `products`, `loading`, and `error`.
+
+### `useProduct`
+
+Created a custom `useProduct` hook for fetching an individual product by ID.
+
+### `useDebounce`
+
+Created a reusable generic `useDebounce` hook for the product search input. Delays updating the search value until the user stops typing.
+
+---
+
+## Step 4: Created Presentational (Dumb) Components
+
+Created the initial reusable UI components for the product catalog:
+
+- **`SearchBar.tsx`** — Controlled input for product name search. It receives `value` and `onChange` through props and does not keep its own state or handle debouncing. The debounce logic is handled by the `useDebounce` hook in the parent.
+
+- **`CategoryFilter.tsx`** — Controlled dropdown for selecting a category. The category options are passed through props instead of being hardcoded, so the component does not depend on where the category data comes from.
+
+- **`ProductList.tsx`** — Renders the virtualized product list using the `List` component from `react-window` v2 (`rowComponent`, `rowCount`, and `rowHeight`). It handles loading, error, and empty states and delegates the rendering of each row to `ProductListItem`.
+
+- **`ProductListItem.tsx`** — Renders an individual product row. It is wrapped with `React.memo` to avoid unnecessary re-renders when the row's props have not changed.
+
+**Design note:** Category filtering is handled server-side by passing the selected category as a GraphQL variable. Name search is handled on the client using the already-fetched product list through `useProductFilter`. Category changes trigger a new query, while the search stays client-side so we do not make an API request for every character typed, even with debouncing.
