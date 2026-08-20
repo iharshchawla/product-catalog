@@ -1,6 +1,11 @@
 import { createContext, useContext } from "react";
 
-const FilterContext = createContext<object | null>(null);
+interface FilterContextValue {
+  hasActiveFilters: boolean;
+  onClearFilters: () => void;
+}
+
+const FilterContext = createContext<FilterContextValue | null>(null);
 
 export function useFilterContext() {
   const ctx = useContext(FilterContext);

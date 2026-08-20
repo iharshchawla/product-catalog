@@ -145,6 +145,15 @@ Implemented the performance requirements from the assignment:
 
 The mock data set was also expanded so that the virtualized list can be meaningfully exercised during development and testing.
 
+**Build output confirming code splitting:**
+
+dist/index.html
+dist/assets/index-CHGiK9Rv.css
+dist/assets/ProductDetailModalWrapper-BJxXMtd0.js
+dist/assets/index-CPvGLm95.js
+
+`ProductDetailModalWrapper` builds into its own separate chunk (1.85 kB), distinct from the main bundle (390.28 kB)
+
 ---
 
 ## Step 9: Security & Dependency Checks
@@ -180,7 +189,7 @@ The test setup uses `jest-environment-jsdom` to provide the browser-like DOM env
 
 ---
 
-## Step 12: Deployment (Vercel)
+## Step 11: Deployment (Vercel)
 
 The assignment did not explicitly require deployment, but I deployed the application to Vercel so the completed catalog can be reviewed through a public URL.
 

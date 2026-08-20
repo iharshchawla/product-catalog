@@ -12,7 +12,7 @@ export function Header({ title }: HeaderProps) {
       <button
         onClick={onClose}
         aria-label="Close"
-        className="text-slate-400 hover:text-slate-700 text-xl leading-none"
+        className="text-slate-400 hover:text-slate-700 text-xl leading-none cursor-pointer"
       >
         ×
       </button>
