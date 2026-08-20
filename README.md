@@ -176,3 +176,86 @@ Tests cover the main user-facing behaviour and component responsibilities, inclu
 Integration-level tests cover the product selection flow and data displayed in the product detail modal.
 
 The test setup uses `jest-environment-jsdom` to provide the browser-like DOM environment required by React Testing Library.
+
+---
+
+## Step 12: Deployment (Vercel)
+
+The assignment did not explicitly require deployment, but I deployed the application to Vercel so the completed catalog can be reviewed through a public URL.
+
+### Local Development
+
+Install the dependencies:
+```bash
+npm install
+```
+
+Start the local GraphQL mock server:
+```bash
+node mock-server/Products/server.js
+```
+
+The local GraphQL API runs at:
+```
+http://localhost:4000/graphql
+```
+
+In another terminal, start the React application:
+```bash
+npm run dev
+```
+
+The Vite development server will provide the local application URL.
+
+### Production GraphQL API
+
+For the Vercel deployment, the mock GraphQL API is exposed through a Vercel serverless function at:
+```
+/api/graphql
+```
+
+This keeps the frontend and GraphQL API on the same domain and avoids the need for a separate backend deployment.
+
+Apollo Client uses the `VITE_GRAPHQL_URI` environment variable:
+```typescript
+const uri = import.meta.env.VITE_GRAPHQL_URI || 'http://localhost:4000/graphql';
+```
+
+For local development, the application falls back to the local GraphQL server. For Vercel, the environment variable is configured as:
+```
+VITE_GRAPHQL_URI=/api/graphql
+```
+
+### Production Build
+
+Before deployment, the production build can be verified locally with:
+```bash
+npm run build
+```
+
+The generated production build can also be previewed with:
+```bash
+npm run preview
+```
+
+### Quality Checks
+
+The following commands can be run before submitting the application:
+```bash
+npm run lint
+npm test
+npm run build
+```
+
+### Deployment
+
+The application is deployed on Vercel and the production build uses the `/api/graphql` endpoint.
+
+- **Live Demo:** [harsh-product-catalog.vercel.app](https://harsh-product-catalog.vercel.app)
+- **GitHub Repository:** [github.com/iharshchawla/product-catalog](https://github.com/iharshchawla/product-catalog)
+
+### Tech Stack
+
+React • TypeScript • Vite • Apollo Client • GraphQL • Zustand • Tailwind CSS • react-window • Jest • React Testing Library • ESLint • Prettier • Husky
+
+---
