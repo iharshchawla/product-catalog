@@ -157,3 +157,22 @@ Added a basic security and dependency review as part of the implementation.
 - No application secrets or credentials are stored in the source code.
 
 The application does not require any authentication or sensitive user data for this assignment.
+
+---
+
+## Step 10: Testing
+
+Configured **Jest + React Testing Library** as required by the assignment.
+
+Tests cover the main user-facing behaviour and component responsibilities, including:
+
+- Product list rendering.
+- Loading, error and empty states.
+- Search input and debounced filtering.
+- Category filtering.
+- Product selection and modal behaviour.
+- User interactions using `@testing-library/user-event`.
+
+Integration-level tests cover the product selection flow and data displayed in the product detail modal.
+
+The test setup uses `jest-environment-jsdom` to provide the browser-like DOM environment required by React Testing Library.
