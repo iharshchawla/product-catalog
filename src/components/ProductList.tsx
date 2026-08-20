@@ -10,21 +10,21 @@ interface ProductListProps {
 }
 
 export function ProductList({ products, loading, error, onProductClick }: ProductListProps) {
-    if (loading) return <p>Loading products...</p>;
-    if (error) return <p role="alert">Error: {error.message}</p>;
-    if (products.length === 0) return <p>No products found.</p>;
+    if (loading) return <p className="text-slate-500 text-sm">Loading products...</p>;
+    if (error) return <p role="alert" className="text-red-600 text-sm">Error: {error.message}</p>;
+    if (products.length === 0) return <p className="text-slate-500 text-sm">No products found.</p>;
 
     return (
         <List
             rowCount={products.length}
-            rowHeight={44}
+            rowHeight={64}
             rowComponent={({ index, style }) => (
                 <div style={style}>
                     <ProductListItem product={products[index]} onClick={onProductClick} />
                 </div>
             )}
             rowProps={{}}
-            style={{ height: 400, width: '100%' }}
+            style={{ height: 'calc(100vh - 220px)', width: '100%' }}
         />
     );
 }

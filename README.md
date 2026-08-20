@@ -105,3 +105,19 @@ I used Zustand for the shared client-side state and kept Apollo responsible for 
 `src/store/catalogStore.ts` contains the shared state and its setter functions. `App.tsx` was updated to read these values from Zustand instead of maintaining them with local `useState`.
 
 This keeps server state in Apollo and shared client/UI state in Zustand, without maintaining duplicate sources of truth.
+
+---
+
+## Step 7: Tailwind CSS & Responsive Design
+
+Added **Tailwind CSS** for styling and responsive layouts. Tailwind was chosen because the assignment does not prescribe a styling framework and it allows the responsive behaviour to be implemented directly alongside the components without adding a separate UI component library.
+
+The existing product catalog components were updated with responsive styles for desktop, tablet, and mobile layouts.
+
+- **`SearchBar.tsx`** — Updated to adapt to the available width on smaller screens.
+- **`CategoryFilter.tsx`** — Updated to work alongside the search input on larger screens and stack appropriately on smaller screens.
+- **`ProductList.tsx`** — Updated the list layout to work across different viewport sizes while retaining the `react-window` virtualization.
+- **`ProductListItem.tsx`** — Updated spacing, sizing, and content layout to remain readable on smaller screens.
+- **Product detail modal** — Added responsive sizing so the modal fits within smaller viewports without overflowing the screen.
+
+The layout uses Tailwind's responsive utility classes rather than fixed dimensions wherever possible, with a mobile-first approach.

@@ -12,28 +12,14 @@ export function Root({ isOpen, onClose, children }: RootProps) {
 
   return (
     <ModalContext.Provider value={{ onClose }}>
-      <div role="presentation" onClick={onClose} style={overlayStyle}>
-        <div role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()} style={contentStyle}>
+      <div role="presentation" onClick={onClose}
+        className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+        <div role="dialog" aria-modal="true"
+          onClick={(e) => e.stopPropagation()}
+          className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
           {children}
         </div>
       </div>
     </ModalContext.Provider>
   );
 }
-
-const overlayStyle: React.CSSProperties = {
-  position: 'fixed',
-  inset: 0,
-  background: 'rgba(0,0,0,0.5)',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-};
-
-const contentStyle: React.CSSProperties = {
-  background: '#fff',
-  borderRadius: 8,
-  padding: 24,
-  minWidth: 300,
-  maxWidth: 500,
-};

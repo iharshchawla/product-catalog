@@ -7,9 +7,14 @@ interface HeaderProps {
 export function Header({ title }: HeaderProps) {
     const { onClose } = useModalContext();
     return (
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
-            <h2>{title}</h2>
-            <button onClick={onClose} aria-label="Close">×</button>
+        <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold text-slate-900">{title}</h2>
+            <button
+                onClick={onClose}
+                aria-label="Close"
+                className="text-slate-400 hover:text-slate-700 text-xl leading-none">
+                ×
+            </button>
         </div>
     );
 }
