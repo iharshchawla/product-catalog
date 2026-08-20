@@ -127,6 +127,7 @@ The catalog was updated to work across desktop, tablet and mobile screen sizes.
 - **`CategoryFilter.tsx`** — Works alongside the search input on larger screens and stacks on smaller screens.
 - **`ProductList.tsx` / `ProductListItem.tsx`** — Responsive spacing and sizing while retaining list virtualization.
 - **Product detail modal** — Uses responsive sizing to fit smaller viewports without overflowing.
+- **FilterControls** — Added `FilterControls.Root / .Search / .CategoryDropdown` as a compound component around the existing `SearchBar` and `CategoryFilter` components. `App.tsx` now uses the `FilterControls` structure instead of rendering the two controls directly.
 
 Tailwind's responsive utility classes are used with a mobile-first approach rather than relying on fixed dimensions.
 
