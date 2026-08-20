@@ -187,21 +187,25 @@ The assignment did not explicitly require deployment, but I deployed the applica
 ### Local Development
 
 Install the dependencies:
+
 ```bash
 npm install
 ```
 
 Start the local GraphQL mock server:
+
 ```bash
 node mock-server/Products/server.js
 ```
 
 The local GraphQL API runs at:
+
 ```
 http://localhost:4000/graphql
 ```
 
 In another terminal, start the React application:
+
 ```bash
 npm run dev
 ```
@@ -211,6 +215,7 @@ The Vite development server will provide the local application URL.
 ### Production GraphQL API
 
 For the Vercel deployment, the mock GraphQL API is exposed through a Vercel serverless function at:
+
 ```
 /api/graphql
 ```
@@ -218,11 +223,13 @@ For the Vercel deployment, the mock GraphQL API is exposed through a Vercel serv
 This keeps the frontend and GraphQL API on the same domain and avoids the need for a separate backend deployment.
 
 Apollo Client uses the `VITE_GRAPHQL_URI` environment variable:
+
 ```typescript
-const uri = import.meta.env.VITE_GRAPHQL_URI || 'http://localhost:4000/graphql';
+const uri = import.meta.env.VITE_GRAPHQL_URI || "http://localhost:4000/graphql";
 ```
 
 For local development, the application falls back to the local GraphQL server. For Vercel, the environment variable is configured as:
+
 ```
 VITE_GRAPHQL_URI=/api/graphql
 ```
@@ -230,11 +237,13 @@ VITE_GRAPHQL_URI=/api/graphql
 ### Production Build
 
 Before deployment, the production build can be verified locally with:
+
 ```bash
 npm run build
 ```
 
 The generated production build can also be previewed with:
+
 ```bash
 npm run preview
 ```
@@ -242,6 +251,7 @@ npm run preview
 ### Quality Checks
 
 The following commands can be run before submitting the application:
+
 ```bash
 npm run lint
 npm test
