@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { useDebounce } from './hooks/useDebounce';
 import { useProducts } from './hooks/useProducts';
 import { useProductFilter } from './hooks/useProductFilter';
@@ -5,8 +6,8 @@ import { useCatalogStore } from './store/catalogStore';
 import { SearchBar } from './components/SearchBar';
 import { CategoryFilter } from './components/CategoryFilter';
 import { ProductList } from './components/ProductList';
-import { ProductDetailModal } from './components/ProductDetailModal';
 
+const ProductDetailModalWrapper = lazy(() => import('./components/ProductDetailModalWrapper'));
 const CATEGORIES = ['Electronics', 'Sportswear', 'Home Appliances', 'Accessories'];
 
 function App() {
@@ -37,24 +38,13 @@ function App() {
         />
       </main>
 
-      <ProductDetailModal.Root isOpen={!!selectedProduct} onClose={() => setSelectedProduct(null)}>
-        <ProductDetailModal.Header title={selectedProduct?.name ?? ''} />
-        <ProductDetailModal.Body>
-          <p className="text-slate-600">
-            Price: <span className="font-semibold text-slate-900">${selectedProduct?.price.toFixed(2)}</span>
-          </p>
-          <p className="text-slate-600">
-            Category: <span className="font-semibold text-slate-900">{selectedProduct?.category}</span>
-          </p>
-        </ProductDetailModal.Body>
-        <ProductDetailModal.Footer>
-          <button
-            onClick={() => setSelectedProduct(null)}
-            className="px-4 py-2 bg-slate-900 text-white rounded-md hover:bg-slate-700 transition-colors">
-            Close
-          </button>
-        </ProductDetailModal.Footer>
-      </ProductDetailModal.Root>
+
+      {selectedProduct && (
+        <Suspense fallback={null}>
+          <ProductDetailModalWrapper product={selectedProduct} onClose={() => setSelectedProduct(null)} />
+        </Suspense>
+      )}
+
     </div>
   );
 }

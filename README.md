@@ -1,6 +1,6 @@
 # Product Catalog — Mott MacDonald
 
-This README captures the implementation decisions made during the assignment, along with the reasoning behind them and how they relate to the requirements.
+This README documents the main implementation decisions made during the assignment and how they map to the requirements.
 
 ---
 
@@ -8,27 +8,26 @@ This README captures the implementation decisions made during the assignment, al
 
 ### Why Vite instead of Create React App?
 
-I chose Vite for the project setup instead of Create React App (CRA), as CRA is deprecated for new React applications and Vite provides a lightweight development and build setup.
+I used Vite instead of Create React App since CRA is deprecated for new React applications. Vite provides a lightweight and fast development and build setup for React and TypeScript.
 
 ### Core Technology & Dependencies
 
-- **React + TypeScript + Vite** — Used as the core frontend stack.
+- **React + TypeScript + Vite** — Core frontend stack with strict TypeScript checking.
 - **Apollo Client + GraphQL** — Used to consume the mock GraphQL API and manage server-side data and caching.
-- **Zustand** — Used for lightweight global client-side state such as filters and selected product state.
-- **react-window** — Used for list virtualization as required by the performance requirements.
-- **Jest + React Testing Library** — Used for unit and integration testing as specified in the assignment.
+- **Zustand** — Used for shared client-side state such as category, search and selected product.
+- **react-window** — Used for virtualizing the product list as required by the performance requirements.
+- **Jest + React Testing Library** — Used for unit and integration testing as required by the assignment.
 - **jest-environment-jsdom** — Provides the DOM environment required for React component tests.
-- **ts-jest + @types/jest** — Used to run TypeScript-based Jest tests with type support.
-- **@testing-library/user-event** — Used to test user interactions such as typing, clicking and keyboard actions.
-- **ESLint + TypeScript ESLint + React Hooks ESLint** — Used for code quality, TypeScript linting and React Hooks rules.
-- **React Refresh ESLint plugin** — Used with the Vite React setup.
-- **Prettier + eslint-config-prettier** — Used for consistent formatting and to avoid conflicts between ESLint and Prettier.
-- **Husky + lint-staged** — Used to run code-quality checks before committing changes.
+- **ts-jest + @types/jest** — Used for TypeScript-based Jest tests and type support.
+- **@testing-library/user-event** — Used to test user interactions such as typing and clicking.
+- **ESLint + TypeScript ESLint + React Hooks ESLint** — Used for linting, TypeScript checks and React Hooks rules.
+- **Prettier + eslint-config-prettier** — Used for consistent formatting and to avoid ESLint/Prettier conflicts.
+- **Husky + lint-staged** — Used to run code-quality checks on staged files before commits.
 - **TypeScript** — Configured with strict type checking.
 
 ### Testing Tooling Decision
 
-I initially considered Vitest because it integrates well with Vite. However, the assignment specifically requires **Jest + React Testing Library**, so I decided to use Jest and configured it to work with the project's TypeScript and ESM setup.
+Vitest was initially considered because it integrates well with Vite. However, the assignment specifically requires **Jest + React Testing Library**, so Jest was used and configured for the TypeScript/React setup.
 
 ---
 
@@ -36,88 +35,125 @@ I initially considered Vitest because it integrates well with Vite. However, the
 
 ### Mock GraphQL Server
 
-A local GraphQL mock server was created using **GraphQL Yoga**.
+Created a local GraphQL mock server using **GraphQL Yoga**.
 
-The server runs with:
+The server can be started with:
+
 ```bash
 node server.js
 ```
 
+The API is available at:
+
+```text
+http://localhost:4000/graphql
+```
+
+The server implements the required `Product` type and the `products` and `product` queries from the assignment.
+
+Apollo Client was configured in the React application to consume the mock GraphQL API and manage the returned server data.
+
 ---
 
-## Step 3: Created Custom Hooks
+## Step 3: Custom Hooks
 
 ### `useProducts`
 
-Created a custom `useProducts` hook to encapsulate the Apollo Client product-list query.  Returns `products`, `loading`, and `error`.
+Created a custom hook to handle the product-list GraphQL query. It keeps the Apollo query logic outside the UI components and returns `products`, `loading` and `error`.
 
 ### `useProduct`
 
-Created a custom `useProduct` hook for fetching an individual product by ID.
+Created a custom hook to fetch an individual product by ID for the product detail modal.
 
 ### `useDebounce`
 
-Created a reusable generic `useDebounce` hook for the product search input. Delays updating the search value until the user stops typing.
+Created a reusable generic debounce hook for the search input. It delays the search value update until the user stops typing.
+
+### `useProductFilter`
+
+Created a custom hook to filter the fetched product list by product name. Search is case-insensitive and is performed on the client using the debounced search value.
+
+**Filtering approach:** Category filtering is handled server-side using the GraphQL `category` variable, while name search is handled client-side. This avoids making a GraphQL request for every search input change.
 
 ---
 
-## Step 4: Created Presentational (Dumb) Components
+## Step 4: Presentational Components
 
-Created the initial reusable UI components for the product catalog:
+Created reusable components with separate responsibilities:
 
-- **`SearchBar.tsx`** — Controlled input for product name search. It receives `value` and `onChange` through props and does not keep its own state or handle debouncing. The debounce logic is handled by the `useDebounce` hook in the parent.
-
-- **`CategoryFilter.tsx`** — Controlled dropdown for selecting a category. The category options are passed through props instead of being hardcoded, so the component does not depend on where the category data comes from.
-
-- **`ProductList.tsx`** — Renders the virtualized product list using the `List` component from `react-window` v2 (`rowComponent`, `rowCount`, and `rowHeight`). It handles loading, error, and empty states and delegates the rendering of each row to `ProductListItem`.
-
-- **`ProductListItem.tsx`** — Renders an individual product row. It is wrapped with `React.memo` to avoid unnecessary re-renders when the row's props have not changed.
-
-**Design note:** Category filtering is handled server-side by passing the selected category as a GraphQL variable. Name search is handled on the client using the already-fetched product list through `useProductFilter`. Category changes trigger a new query, while the search stays client-side so we do not make an API request for every character typed, even with debouncing.
+- **`SearchBar.tsx`** — Controlled input for product name search. It receives `value` and `onChange` through props and does not contain search or debounce logic.
+- **`CategoryFilter.tsx`** — Controlled category dropdown. Category options are passed through props rather than being hardcoded.
+- **`ProductList.tsx`** — Renders the virtualized product list using the `react-window` v2 `List` API. Handles loading, error and empty states.
+- **`ProductListItem.tsx`** — Renders an individual product row and uses `React.memo` to avoid unnecessary re-renders when its relevant props have not changed.
 
 ---
 
-## Step 5: Product Detail Modal (Compound Component)
+## Step 5: Product Detail Modal
 
 Implemented the product detail modal using the compound component pattern:
 
 `ProductDetailModal.Root / .Header / .Body / .Footer`
 
-React Context is used internally to share the `onClose` handler between the modal sub-components, avoiding the need to pass the same props through each level.
+React Context is used internally to share the modal actions between the compound components without passing the same props through each level.
 
-- Clicking the overlay closes the modal, while clicking inside the modal content keeps it open. This is handled using event propagation control.
-- `Root` returns `null` when the modal is closed, so the modal content is not rendered or mounted until it is opened.
+- Clicking the overlay closes the modal, while clicking inside the modal content keeps it open.
+- `Root` returns `null` when the modal is closed, so the modal content is not mounted until it is opened.
 
 ---
 
 ## Step 6: Global State (Zustand)
 
-The state requirements in the assignment mark product data and selected category as global, while search, selected product, and loading/error can be either local or global.
+I used Zustand for shared client-side state and kept Apollo Client responsible for server-side product data.
 
-I used Zustand for the shared client-side state and kept Apollo responsible for the server-side product data.
-
-- **Product list** — Kept in Apollo Client's cache through `useProducts`. It is already globally available through Apollo, so duplicating the same data in Zustand would add unnecessary state and another source of truth.
-- **Selected category** — Stored in Zustand as shared filter state.
-- **Search query** — Stored in Zustand so it can be accessed by other components without prop drilling.
+- **Product list** — Kept in Apollo Client's cache. It is already globally available through Apollo, so duplicating it in Zustand would create another source of truth.
+- **Selected category** — Stored in Zustand.
+- **Search query** — Stored in Zustand.
 - **Selected product** — Stored in Zustand and used to control the product detail modal.
 - **Loading/error** — Kept with Apollo's `loading` and `error` states instead of duplicating them in Zustand.
 
-`src/store/catalogStore.ts` contains the shared state and its setter functions. `App.tsx` was updated to read these values from Zustand instead of maintaining them with local `useState`.
+`src/store/catalogStore.ts` contains the shared state and setter functions.
 
-This keeps server state in Apollo and shared client/UI state in Zustand, without maintaining duplicate sources of truth.
+This keeps server state and client/UI state separate without duplicating the product data.
 
 ---
 
 ## Step 7: Tailwind CSS & Responsive Design
 
-Added **Tailwind CSS** for styling and responsive layouts. Tailwind was chosen because the assignment does not prescribe a styling framework and it allows the responsive behaviour to be implemented directly alongside the components without adding a separate UI component library.
+Added **Tailwind CSS** for component styling and responsive layouts.
 
-The existing product catalog components were updated with responsive styles for desktop, tablet, and mobile layouts.
+The catalog was updated to work across desktop, tablet and mobile screen sizes.
 
-- **`SearchBar.tsx`** — Updated to adapt to the available width on smaller screens.
-- **`CategoryFilter.tsx`** — Updated to work alongside the search input on larger screens and stack appropriately on smaller screens.
-- **`ProductList.tsx`** — Updated the list layout to work across different viewport sizes while retaining the `react-window` virtualization.
-- **`ProductListItem.tsx`** — Updated spacing, sizing, and content layout to remain readable on smaller screens.
-- **Product detail modal** — Added responsive sizing so the modal fits within smaller viewports without overflowing the screen.
+- **`SearchBar.tsx`** — Adapts to the available width on smaller screens.
+- **`CategoryFilter.tsx`** — Works alongside the search input on larger screens and stacks on smaller screens.
+- **`ProductList.tsx` / `ProductListItem.tsx`** — Responsive spacing and sizing while retaining list virtualization.
+- **Product detail modal** — Uses responsive sizing to fit smaller viewports without overflowing.
 
-The layout uses Tailwind's responsive utility classes rather than fixed dimensions wherever possible, with a mobile-first approach.
+Tailwind's responsive utility classes are used with a mobile-first approach rather than relying on fixed dimensions.
+
+---
+
+## Step 8: Performance Optimisation
+
+Implemented the performance requirements from the assignment:
+
+- **Debounced search** — Prevents filtering work on every keystroke.
+- **`React.memo`** — Used for product rows to reduce unnecessary re-renders.
+- **`react-window`** — Used to virtualize the product list so only the visible rows need to be rendered.
+- **Lazy loading / code splitting** — The product detail modal is loaded separately so it does not need to be included in the initial application bundle.
+- **Memoised derived data** — Product filtering and other derived values are calculated only when their relevant inputs change.
+
+The mock data set was also expanded so that the virtualized list can be meaningfully exercised during development and testing.
+
+---
+
+## Step 9: Security & Dependency Checks
+
+Added a basic security and dependency review as part of the implementation.
+
+- Avoided direct HTML injection APIs such as `dangerouslySetInnerHTML`.
+- User input is treated as text and is not executed as HTML.
+- TypeScript strict checking is enabled.
+- Dependencies were reviewed and an npm audit was run to identify known vulnerabilities.
+- No application secrets or credentials are stored in the source code.
+
+The application does not require any authentication or sensitive user data for this assignment.
