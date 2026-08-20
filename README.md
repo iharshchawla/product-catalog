@@ -85,6 +85,7 @@ Created reusable components with separate responsibilities:
 - **`CategoryFilter.tsx`** — Controlled category dropdown. Category options are passed through props rather than being hardcoded.
 - **`ProductList.tsx`** — Renders the virtualized product list using the `react-window` v2 `List` API. Handles loading, error and empty states.
 - **`ProductListItem.tsx`** — Renders an individual product row and uses `React.memo` to avoid unnecessary re-renders when its relevant props have not changed.
+- **FilterControls** — Added `FilterControls.Root / .Search / .CategoryDropdown` as a compound component around the existing `SearchBar` and `CategoryFilter` components. `App.tsx` now uses the `FilterControls` structure instead of rendering the two controls directly.
 
 ---
 
@@ -127,7 +128,6 @@ The catalog was updated to work across desktop, tablet and mobile screen sizes.
 - **`CategoryFilter.tsx`** — Works alongside the search input on larger screens and stacks on smaller screens.
 - **`ProductList.tsx` / `ProductListItem.tsx`** — Responsive spacing and sizing while retaining list virtualization.
 - **Product detail modal** — Uses responsive sizing to fit smaller viewports without overflowing.
-- **FilterControls** — Added `FilterControls.Root / .Search / .CategoryDropdown` as a compound component around the existing `SearchBar` and `CategoryFilter` components. `App.tsx` now uses the `FilterControls` structure instead of rendering the two controls directly.
 
 Tailwind's responsive utility classes are used with a mobile-first approach rather than relying on fixed dimensions.
 
